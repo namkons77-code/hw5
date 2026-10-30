@@ -519,34 +519,118 @@ body {
   align-items: center;
   justify-content: space-between;
   background-color: #f8fafc;
-  padding: 12px 16px;
+  padding: 10px 14px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
   font-size: 0.92rem;
-  transition: background-color 0.15s ease;
+  transition: all 0.15s ease;
+  min-height: 48px;
 }
 
 .schedule-item:hover {
   background-color: #f1f5f9;
 }
 
-.schedule-item span {
-  word-break: break-word;
-  padding-right: 8px;
+.schedule-item.editing {
+  background-color: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  padding: 6px 10px;
 }
 
-.delete-btn {
+.schedule-text {
+  word-break: break-word;
+  padding-right: 8px;
+  flex: 1;
+}
+
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.action-btn {
   background: transparent;
   border: none;
   color: var(--text-light);
   cursor: pointer;
-  padding: 6px;
-  font-size: 0.92rem;
-  transition: color 0.15s ease;
+  padding: 6px 8px;
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.delete-btn:hover {
+.action-btn:hover {
+  background-color: #e2e8f0;
+}
+
+.action-btn.edit-btn:hover {
+  color: var(--primary);
+}
+
+.action-btn.delete-btn:hover {
   color: var(--sunday);
+}
+
+/* 인라인 수정 폼 스타일 */
+.schedule-edit-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.schedule-edit-input {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.schedule-edit-input:focus {
+  border-color: var(--primary);
+}
+
+.action-btn-sm {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.save-btn {
+  background-color: var(--primary);
+  color: #ffffff;
+}
+
+.save-btn:hover {
+  background-color: var(--primary-hover);
+}
+
+.cancel-btn {
+  background-color: #f1f5f9;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+.cancel-btn:hover {
+  background-color: #e2e8f0;
 }
 
 .empty-message {

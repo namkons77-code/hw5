@@ -1,6 +1,6 @@
 /**
  * weather.js - 상세 날씨 및 일정 관리 스크립트
- * index.html에서 전달된 위치(lat, lon) 우선 처리 및 캐싱
+ * Open-Meteo 날씨, 일정 추가/수정/삭제 및 세션 캐싱 지원
  */
 'use strict';
 
@@ -165,7 +165,6 @@
     // 1. URL 파라미터로 유효한 좌표가 넘어온 경우 (index.html에서 전달)
     if (!forceRefresh && !isNaN(passedLat) && !isNaN(passedLon)) {
       let placeName = '현재 위치';
-      // 로컬 캐시에서 동일 좌표의 명칭이 있는지 확인
       try {
         const cached = JSON.parse(localStorage.getItem(STORAGE_LOCATION_KEY));
         if (cached && Math.abs(cached.lat - passedLat) < 0.05 && Math.abs(cached.lon - passedLon) < 0.05) {
@@ -177,7 +176,6 @@
       detailLocationNameEl.textContent = placeName;
       fetchWeather(passedLat, passedLon);
 
-      // 상세 행정구역명이 없는 경우 백그라운드에서 역지오코딩 시도
       if (placeName === '현재 위치') {
         try {
           const geoRes = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${passedLat}&longitude=${passedLon}&localityLanguage=ko`);
@@ -319,7 +317,7 @@
     window.history.replaceState({ path: newUrl }, '', newUrl);
   }
 
-  // 일정 목록 렌더링 (DocumentFragment 적용)
+  // 일정 목록 렌더링 (수정/삭제 버튼 및 DocumentFragment 적용)
   function renderScheduleList(dateKey) {
     const daySchedules = schedules[dateKey] || [];
     scheduleCountEl.textContent = `${daySchedules.length}개`;
@@ -341,22 +339,104 @@
       li.className = 'schedule-item';
 
       const span = document.createElement('span');
+      span.className = 'schedule-text';
       span.textContent = text;
 
+      // 액션 버튼 그룹 (수정, 삭제)
+      const actionsDiv = document.createElement('div');
+      actionsDiv.className = 'item-actions';
+
+      // 수정 버튼
+      const editBtn = document.createElement('button');
+      editBtn.className = 'action-btn edit-btn';
+      editBtn.type = 'button';
+      editBtn.setAttribute('aria-label', `일정 "${text}" 수정`);
+      editBtn.title = '일정 수정';
+      editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+      editBtn.addEventListener('click', () => startEditing(li, dateKey, index, text));
+
+      // 삭제 버튼
       const delBtn = document.createElement('button');
-      delBtn.className = 'delete-btn';
+      delBtn.className = 'action-btn delete-btn';
       delBtn.type = 'button';
       delBtn.setAttribute('aria-label', `일정 "${text}" 삭제`);
-      delBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
       delBtn.title = '일정 삭제';
+      delBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
       delBtn.addEventListener('click', () => deleteSchedule(dateKey, index));
 
+      actionsDiv.appendChild(editBtn);
+      actionsDiv.appendChild(delBtn);
+
       li.appendChild(span);
-      li.appendChild(delBtn);
+      li.appendChild(actionsDiv);
       fragment.appendChild(li);
     });
 
     scheduleListEl.replaceChildren(fragment);
+  }
+
+  // 인라인 일정 수정 모드
+  function startEditing(liElement, dateKey, index, currentText) {
+    liElement.innerHTML = '';
+    liElement.classList.add('editing');
+
+    const editForm = document.createElement('form');
+    editForm.className = 'schedule-edit-form';
+
+    const editInput = document.createElement('input');
+    editInput.type = 'text';
+    editInput.className = 'schedule-edit-input';
+    editInput.value = currentText;
+    editInput.maxLength = 100;
+    editInput.required = true;
+
+    const saveBtn = document.createElement('button');
+    saveBtn.type = 'submit';
+    saveBtn.className = 'action-btn-sm save-btn';
+    saveBtn.title = '저장';
+    saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> 저장';
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'action-btn-sm cancel-btn';
+    cancelBtn.title = '취소';
+    cancelBtn.innerHTML = '<i class="fa-solid fa-xmark"></i> 취소';
+
+    editForm.appendChild(editInput);
+    editForm.appendChild(saveBtn);
+    editForm.appendChild(cancelBtn);
+    liElement.appendChild(editForm);
+
+    editInput.focus();
+    editInput.select();
+
+    // 저장 이벤트
+    editForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const updatedText = editInput.value.trim();
+      if (!updatedText) return;
+      updateSchedule(dateKey, index, updatedText);
+    });
+
+    // 취소 이벤트
+    cancelBtn.addEventListener('click', () => {
+      renderScheduleList(dateKey);
+    });
+
+    // ESC 키 취소
+    editInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        renderScheduleList(dateKey);
+      }
+    });
+  }
+
+  // 일정 수정 업데이트
+  function updateSchedule(dateKey, index, newText) {
+    if (!schedules[dateKey] || schedules[dateKey][index] === undefined) return;
+    schedules[dateKey][index] = newText;
+    localStorage.setItem(STORAGE_SCHEDULE_KEY, JSON.stringify(schedules));
+    renderScheduleList(dateKey);
   }
 
   // 일정 추가
