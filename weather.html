@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>날짜 상세 정보 & 일정</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Pretendard 웹폰트 -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <!-- FontAwesome 아이콘 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="weather.js" defer></script>
+</head>
+<body>
+  <div class="detail-container">
+    <main class="detail-card" aria-label="날짜 상세 및 일정 관리">
+      <!-- 상단 네비게이션 바 -->
+      <nav class="detail-top-nav" aria-label="상단 페이지 이동">
+        <a href="index.html" class="back-link">
+          <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> 캘린더로 돌아가기
+        </a>
+        <div class="day-nav-group" role="group" aria-label="일자 이동 버튼 그룹">
+          <button id="prev-day-btn" class="btn-icon" type="button" title="이전 날짜" aria-label="이전 날짜 이동">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button id="today-day-btn" class="btn btn-outline btn-sm" type="button">오늘</button>
+          <button id="next-day-btn" class="btn-icon" type="button" title="다음 날짜" aria-label="다음 날짜 이동">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </nav>
+
+      <!-- 날짜 헤더 정보 -->
+      <header class="detail-header">
+        <div class="detail-title-wrap">
+          <h1 id="selected-date-title">2026년 10월 30일 (금)</h1>
+          <span id="selected-day-badge" class="badge">오늘</span>
+        </div>
+        <button id="location-refresh-btn" class="detail-location-tag" type="button" title="클릭하여 현재 위치로 날씨 새로고침">
+          <i class="fa-solid fa-location-dot" aria-hidden="true"></i> <span id="detail-location-name">현재 위치</span>
+        </button>
+      </header>
+
+      <!-- 날씨 정보 상세 카드 -->
+      <section class="detail-weather-card" aria-label="해당 일자 날씨 정보">
+        <div class="weather-card-inner">
+          <i id="weather-detail-icon" class="fa-solid fa-cloud-sun detail-weather-icon weather-cloud-sun" aria-hidden="true"></i>
+          <div class="weather-text-group">
+            <span class="weather-status-label">일일 날씨 (Open-Meteo)</span>
+            <h2 id="weather-detail-desc" class="weather-desc">날씨 정보 로딩 중...</h2>
+            <div id="weather-detail-temp" class="weather-temp-range">최고 --℃ / 최저 --℃</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 일정 및 메모 섹션 -->
+      <section class="detail-schedule-section" aria-label="해당 일자 일정 목록 및 추가">
+        <div class="schedule-section-header">
+          <h3><i class="fa-regular fa-clipboard" aria-hidden="true"></i> 일정 및 메모</h3>
+          <span id="schedule-count" class="count-badge">0개</span>
+        </div>
+
+        <!-- 일정 추가 폼 -->
+        <form id="schedule-form" class="schedule-form">
+          <input 
+            type="text" 
+            id="schedule-input" 
+            placeholder="이 날짜에 할 일이나 메모를 추가하세요..." 
+            autocomplete="off"
+            maxlength="100"
+            required
+            aria-label="새 일정 내용"
+          />
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i> 추가
+          </button>
+        </form>
+
+        <!-- 일정 목록 -->
+        <div class="schedule-list-wrapper">
+          <ul id="schedule-list" class="schedule-list" aria-live="polite">
+            <!-- 등록된 일정 동적 생성 -->
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

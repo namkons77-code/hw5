@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>간편 캘린더</title>
+    <link rel="stylesheet" href="style.css" />
+    <!-- Pretendard 웹폰트 -->
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
+    />
+    <!-- FontAwesome 아이콘 CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="calendar-app">
+      <!-- 메인 캘린더 컨테이너 -->
+      <main class="calendar-card" aria-label="월간 캘린더">
+        <!-- 헤더: 월/년도 및 탐색 버튼 -->
+        <header class="calendar-header">
+          <div class="title-group">
+            <div class="title-with-badge">
+              <h1 id="current-month-year">2026년 10월</h1>
+              <span
+                id="location-status-badge"
+                class="location-badge"
+                title="클릭하여 내 위치 다시 확인"
+              >
+                <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                <span id="location-status-text">내 위치 확인 중...</span>
+              </span>
+            </div>
+            <span id="sub-header-date" class="sub-date"
+              >오늘은 10월 30일 금요일입니다</span
+            >
+          </div>
+
+          <div class="header-controls">
+            <button
+              id="today-btn"
+              class="btn btn-outline"
+              type="button"
+              title="오늘 날짜로 이동"
+            >
+              오늘
+            </button>
+            <div
+              class="nav-btn-group"
+              role="group"
+              aria-label="달력 월 이동 버튼 그룹"
+            >
+              <button
+                id="prev-btn"
+                class="btn-icon"
+                type="button"
+                aria-label="이전 달 이동"
+              >
+                <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+              </button>
+              <button
+                id="next-btn"
+                class="btn-icon"
+                type="button"
+                aria-label="다음 달 이동"
+              >
+                <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- 요일 헤더 -->
+        <div class="weekdays-grid" role="row" aria-label="요일">
+          <div class="weekday sun" role="columnheader">일</div>
+          <div class="weekday" role="columnheader">월</div>
+          <div class="weekday" role="columnheader">화</div>
+          <div class="weekday" role="columnheader">수</div>
+          <div class="weekday" role="columnheader">목</div>
+          <div class="weekday" role="columnheader">금</div>
+          <div class="weekday sat" role="columnheader">토</div>
+        </div>
+
+        <!-- 날짜 그리드 -->
+        <div
+          id="dates-grid"
+          class="dates-grid"
+          role="grid"
+          aria-label="날짜 목록"
+        >
+          <!-- 자바스크립트로 날짜가 렌더링됩니다 -->
+        </div>
+
+        <!-- 하단 안내 문구 -->
+        <footer class="calendar-footer-hint">
+          <i class="fa-solid fa-circle-info" aria-hidden="true"></i> 날짜를
+          클릭하면 확인된 <strong>내 위치의 날씨 및 일정 페이지</strong>로
+          이동합니다.
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>
